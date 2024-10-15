@@ -1,8 +1,8 @@
 "use client"
-import { getStoreLocations } from '@/services'
+import { createBooking, getStoreLocations } from '@/services'
 import React, { useEffect, useState } from 'react'
 
-function Form({ handleClose }: { handleClose: () => void }) {
+function Form({car}:any) {
 
     const [storeLocation, setStoreLocation] = useState<any>([])
     const [formValue, setFormValue] = useState({
@@ -12,7 +12,18 @@ function Form({ handleClose }: { handleClose: () => void }) {
         pickUpTime: '',
         dropOffTime: '',
         contactNumber: '',
+        userName:'Yash Kumar',
+        carId: ''
     })
+
+    useEffect(() => {
+        if(car){
+            setFormValue({
+                ...formValue,
+                carId: car.id
+            })
+        }
+    },[car])
     useEffect(() => { getStoreLocation_() }, [])
 
     const getStoreLocation_ = async () => {
@@ -27,9 +38,11 @@ function Form({ handleClose }: { handleClose: () => void }) {
         })
     }
 
-    const handleSubmit = (event: any) => {
+    const handleSubmit = async(event: any) => {
         event?.preventDefault();
         console.log(formValue)
+        const resp = await createBooking(formValue);
+        console.log(resp);
     }
 
     return (
@@ -74,10 +87,13 @@ function Form({ handleClose }: { handleClose: () => void }) {
                 </div>
             </div>
             
-            <div className='modal-action flex gap-2'>
-                <button className='btn bg-gray-400 text-black hover:bg-gray-700 hover:text-white' onClick={handleClose}>Close</button>
+           
+                <form method="dialog" className='flex gap-2'>
+
+                <button className='btn bg-gray-400 text-black hover:bg-gray-700 hover:text-white'>Close</button>
                 <button className='btn bg-blue-500 text-white hover:bg-blue-800' onClick={handleSubmit}>Save</button>
-            </div>
+                </form>
+            
 
         </div>
     )
